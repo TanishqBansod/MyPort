@@ -62,7 +62,7 @@ const Projects = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, []); // This effect doesn't require 'navigate' in the dependency array
 
   // Collision detection
   useEffect(() => {
@@ -82,7 +82,7 @@ const Projects = () => {
     };
 
     checkCollision();
-  }, [position]);
+  }, [position, navigate]); // Add 'navigate' to the dependency array here
 
   const handleImageClick = (index) => {
     setSelectedProjectIndex(index); // Set the selected project

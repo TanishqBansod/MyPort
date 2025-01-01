@@ -39,7 +39,7 @@ const ContactMe = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, []); // This effect doesn't require 'navigate' in the dependency array
 
   // Collision detection
   useEffect(() => {
@@ -54,12 +54,12 @@ const ContactMe = () => {
         tiger.bottom > semicircle.top
       ) {
         setPosition({ x: 0, y: 0 }); // Reset tiger position
-        navigate("/next-page");
+        navigate("/next-page"); // Redirect to next page
       }
     };
 
     checkCollision();
-  }, [position]);
+  }, [position, navigate]); // Add 'navigate' to the dependency array here
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-black to-green-500 text-white p-8 space-y-6">

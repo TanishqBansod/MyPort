@@ -39,7 +39,7 @@ const AboutMe = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, []); // This effect doesn't require 'navigate' in the dependency array
 
   // Collision detection
   useEffect(() => {
@@ -64,7 +64,7 @@ const AboutMe = () => {
     };
 
     checkCollision();
-  }, [position, navigate]);
+  }, [position, navigate]); // Add 'navigate' to the dependency array here
 
   return (
     <div className="relative flex flex-col items-center justify-start min-h-screen bg-gradient-to-r from-red-500 to-black text-white p-8 space-y-12">

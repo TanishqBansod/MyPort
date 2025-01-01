@@ -39,7 +39,7 @@ const Resume = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, []); // This effect doesn't need 'navigate' in the dependency array
 
   // Collision detection
   useEffect(() => {
@@ -59,7 +59,7 @@ const Resume = () => {
     };
 
     checkCollision();
-  }, [position]);
+  }, [position, navigate]); // Add 'navigate' to the dependency array here
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-yellow-500 to-black text-white p-8">
