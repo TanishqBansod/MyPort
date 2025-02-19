@@ -11,23 +11,44 @@ const Resume = () => {
   // Handle keypress for tiger movement
   useEffect(() => {
     const handleKeyDown = (e) => {
+      e.preventDefault(); // Prevent scrolling
+
+      const step = 30;
+      const tigerElement = tigerRef.current;
+      if (!tigerElement) return;
+
+      const tigerRect = tigerElement.getBoundingClientRect();
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
       setPosition((prev) => {
-        const step = 30;
         let newX = prev.x;
         let newY = prev.y;
 
         switch (e.key) {
           case "ArrowUp":
-            newY -= step;
+            // Only move if it won't go above the top of the window
+            if (tigerRect.top > step) {
+              newY = prev.y - step;
+            }
             break;
           case "ArrowDown":
-            newY += step;
+            // Only move if it won't go below the bottom of the window
+            if (tigerRect.bottom < windowHeight - step) {
+              newY = prev.y + step;
+            }
             break;
           case "ArrowLeft":
-            newX -= step;
+            // Only move if it won't go beyond the left edge
+            if (tigerRect.left > step) {
+              newX = prev.x - step;
+            }
             break;
           case "ArrowRight":
-            newX += step;
+            // Only move if it won't go beyond the right edge
+            if (tigerRect.right < windowWidth - step) {
+              newX = prev.x + step;
+            }
             break;
           default:
             return prev;
@@ -39,7 +60,7 @@ const Resume = () => {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []); // This effect doesn't need 'navigate' in the dependency array
+  }, []);
 
   // Collision detection
   useEffect(() => {
@@ -53,22 +74,28 @@ const Resume = () => {
         tiger.top < semicircle.bottom &&
         tiger.bottom > semicircle.top
       ) {
-        setPosition({ x: 0, y: 0 }); // Reset tiger position
-        navigate("/next-page"); // Redirect to next page
+        setPosition({ x: 0, y: 0 });
+        navigate("/next-page");
       }
     };
 
     checkCollision();
-  }, [position, navigate]); // Add 'navigate' to the dependency array here
+  }, [position, navigate]);
+
+  // Handle semicircle click
+  const handleSemicircleClick = () => {
+    setPosition({ x: 0, y: 0 });
+    navigate("/next-page");
+  };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-yellow-500 to-black text-white p-8">
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-yellow-500 to-black text-white p-8 relative overflow-hidden">
       <h1 className="text-4xl font-bold text-center mb-12">Resume</h1>
 
       {/* Embed the PDF using iframe */}
       <div className="w-full max-w-4xl h-[80vh]">
         <iframe
-          src="/resume.pdf" // Path to the PDF inside public folder
+          src="/resume.pdf"
           width="100%"
           height="100%"
           frameBorder="0"
@@ -79,9 +106,10 @@ const Resume = () => {
       {/* Tiger */}
       <div
         ref={tigerRef}
-        className="absolute w-16 h-16"
+        className="fixed w-16 h-16 z-50"
         style={{
           transform: `translate(${position.x}px, ${position.y}px)`,
+          transition: "transform 0.1s ease-out",
         }}
       >
         <img
@@ -91,10 +119,11 @@ const Resume = () => {
         />
       </div>
 
-      {/* Semicircle off the right side, rotated 90 degrees counterclockwise */}
+      {/* Clickable Semicircle */}
       <div
         ref={semicircleRef}
-        className="absolute bottom-0 transform -translate-y-1/2"
+        onClick={handleSemicircleClick}
+        className="fixed bottom-0 transform -translate-y-1/2 cursor-pointer hover:brightness-110 transition-all"
         style={{
           width: "100px",
           height: "50px",

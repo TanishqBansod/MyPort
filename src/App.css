@@ -193,3 +193,15 @@ html,
 .glow-effect {
   animation: glow 1.5s ease-in-out infinite;
 }
+.neonTiger {
+  width: 15vw; /* Default for large screens */
+  height: 15vw; /* Default for large screens */
+  @media (max-width: 768px) {
+    width: 30vw; /* Adjust size for tablets */
+    height: 30vw; /* Adjust size for tablets */
+  }
+  @media (max-width: 480px) {
+    width: 40vw; /* Adjust size for small screens (phones) */
+    height: 40vw; /* Adjust size for small screens (phones) */
+  }
+}
